@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 Data Peminjaman Siswa</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 30px 10px;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #7FDBFF;
+    }
+    table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th {
+      background-color: rgba(0,0,0,0.4);
+      color: #7FDBFF;
+    }
+    tr:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+    .btn {
+      margin: 20px 5px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      border: none;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: red;
+      color: white;
+    }
+    input[type="text"] {
+      width: 250px;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📚 Data Peminjaman Siswa</h2>
+  
+  <input type="text" id="searchInput" placeholder="🔍 Cari nama siswa..." onkeyup="cariData()">
+  
+  <table id="tabelSiswa">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Kelas</th>
+        <th>Absen</th>
+        <th>Tanggal</th>
+        <th>Fasilitas</th>
+        <th>Jam</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <a href="index.html" class="btn">🏠 Kembali</a>
+
+  <script>
+    function tampilkanData() {
+      const dataSiswa = JSON.parse(localStorage.getItem("dataPeminjamanSiswa")) || [];
+      const tbody = document.querySelector("#tabelSiswa tbody");
+      tbody.innerHTML = "";
+
+      if (dataSiswa.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">Belum ada data peminjaman.</td></tr>`;
+        return;
+      }
+
+      dataSiswa.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.nama}</td>
+          <td>${item.kelas}</td>
+          <td>${item.absen}</td>
+          <td>${item.tanggal}</td>
+          <td>${item.fasilitas}</td>
+          <td>${item.jamMulai} - ${item.jamSelesai}</td>
+          <td>${item.keterangan || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function cariData() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#tabelSiswa tbody tr");
+      rows.forEach(row => {
+        const nama = row.cells[0].textContent.toLowerCase();
+        row.style.display = nama.includes(input) ? "" : "none";
+      });
+    }
+
+    tampilkanData();
+  </script>
+</body>
+</html>

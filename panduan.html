@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📘 Panduan Penggunaan</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      margin: 0;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #7FDBFF;
+      margin-bottom: 25px;
+      text-shadow: 0 0 8px rgba(0,0,0,0.4);
+    }
+
+    .panduan {
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 25px;
+      text-align: left;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    .panduan h3 {
+      color: #7FDBFF;
+      margin-top: 20px;
+    }
+
+    .panduan p {
+      line-height: 1.6;
+      margin: 8px 0;
+    }
+
+    .btn {
+      margin-top: 20px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      padding: 12px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn:hover {
+      background: red;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .button-group {
+      margin-top: 35px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    @media (min-width: 600px) {
+      .button-group {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📘 Panduan Penggunaan Aplikasi</h1>
+
+  <div class="panduan">
+    <h3>👩‍🏫 Untuk Guru:</h3>
+    <p>1. Pilih menu <strong>Formulir Guru</strong>.</p>
+    <p>2. Isi nama, mata pelajaran, tanggal, jam, dan fasilitas yang ingin dipinjam.</p>
+    <p>3. Klik tombol <strong>Kirim</strong> untuk menyimpan data.</p>
+    <p>4. Kartu peminjaman akan otomatis dibuat dan dapat diunduh.</p>
+
+    <h3>🎓 Untuk Siswa:</h3>
+    <p>1. Pilih menu <strong>Formulir Siswa</strong>.</p>
+    <p>2. Isi data sesuai kelas dan absen, lalu pilih fasilitas yang dibutuhkan.</p>
+    <p>3. Tekan <strong>Kirim</strong> dan lihat kartu peminjaman.</p>
+
+    <h3>💡 Catatan:</h3>
+    <p>- Pastikan semua data diisi dengan benar sebelum mengirim.</p>
+    <p>- Fitur cetak kartu akan menyimpan kartu dalam format gambar (.jpg).</p>
+    <p>- Untuk melihat semua data peminjaman, klik tombol di bawah ini.</p>
+  </div>
+
+  <div class="button-group">
+    <a href="data.html" class="btn">📊 Lihat Data Peminjaman</a>
+    <a href="index.html" class="btn">🏠 Kembali ke Beranda</a>
+  </div>
+</body>
+</html>

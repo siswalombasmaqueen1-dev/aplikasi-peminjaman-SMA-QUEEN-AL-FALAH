@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Peminjaman Fasilitas Sekolah</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    img {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1rem;
+      max-width: 700px;
+      line-height: 1.7;
+      margin-bottom: 40px;
+      padding: 0 10px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .button-container a {
+      text-decoration: none;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-radius: 10px;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .button-container a:hover {
+      background: red;
+      color: white;
+      transform: scale(1.03);
+    }
+
+    .admin-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      font-size: 14px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0.8;
+    }
+
+    .admin-btn:hover {
+      background: red;
+      color: white;
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    /* ===============================
+       🔹 MEDIA QUERIES (RESPONSIVE)
+       =============================== */
+
+    /* Tablet (iPad, layar sedang) */
+    @media (max-width: 992px) {
+      body {
+        padding: 30px 15px;
+      }
+      h1 {
+        font-size: 1.9rem;
+      }
+      p {
+        font-size: 0.95rem;
+      }
+      .button-container {
+        max-width: 260px;
+      }
+    }
+
+    /* HP (smartphone) */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+      img {
+        max-width: 140px;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      p {
+        font-size: 0.9rem;
+      }
+      .button-container a {
+        font-size: 1rem;
+        padding: 14px;
+      }
+      .admin-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+        bottom: 15px;
+        left: 15px;
+      }
+    }
+
+    /* Layar besar (monitor desktop besar) */
+    @media (min-width: 1200px) {
+      h1 {
+        font-size: 2.6rem;
+      }
+      p {
+        font-size: 1.1rem;
+      }
+      .button-container a {
+        font-size: 1.2rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <img src="logo sekolah.png" alt="logo sekolah">
+
+  <h1>📚 Aplikasi Peminjaman Fasilitas Sekolah</h1>
+  <p>Kelola peminjaman fasilitas sekolah secara efisien dan mudah melalui aplikasi ini. Mulai dari pengisian formulir hingga data peminjaman.</p>
+
+  <div class="button-container">
+    <a href="formulir.html">📝 Formulir Peminjaman</a>
+    <a href="data.html">📊 Data Peminjaman</a>
+    <a href="panduan.html">📘 Panduan Peminjaman</a>
+  </div>
+
+  <button class="admin-btn" onclick="cekSandi()">🧑‍💻 Admin</button>
+
+  <script>
+    function cekSandi() {
+      const sandiBenar = "admin123";
+      const input = prompt("Masukkan sandi admin:");
+      if (input === sandiBenar) {
+        alert("Akses diterima ✅");
+        window.location.href = "admin.html";
+      } else if (input === null) {
+        return;
+      } else {
+        alert("❌ Sandi salah! Akses ditolak.");
+      }
+    }
+  </script>
+
+</body>
+</html>

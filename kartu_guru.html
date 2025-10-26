@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kartu Peminjaman Guru</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .kartu {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+    }
+
+    h2 {
+      margin: 15px 0 25px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 8px 0;
+      text-align: left;
+      padding-left: 20px;
+    }
+
+    #qrcode {
+      margin: 15px auto 25px;
+      width: 120px;
+      height: 120px;
+      background: white;
+      padding: 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .btn {
+      margin: 10px 8px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .btn:hover {
+      background: red;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .kartu { padding: 25px 18px; }
+      h2 { font-size: 20px; }
+      p { font-size: 15px; }
+      .btn { font-size: 14px; padding: 10px 16px; width: 100%; margin: 8px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kartu" id="kartuGuru">
+    <div id="qrcode"></div>
+    <h2>👩‍🏫 Kartu Peminjaman Guru</h2>
+
+    <p><strong>Nama:</strong> <span id="nama">-</span></p>
+    <p><strong>Mata Pelajaran:</strong> <span id="mapel">-</span></p>
+    <p><strong>Tanggal:</strong> <span id="tanggal">-</span></p>
+    <p><strong>Fasilitas:</strong> <span id="fasilitas">-</span></p>
+    <p><strong>Jam:</strong> <span id="jam">-</span></p>
+    <p><strong>Keterangan:</strong> <span id="keterangan">-</span></p>
+    <p><strong>No. Peminjaman:</strong> <span id="kode">-</span></p>
+  </div>
+
+  <div style="margin-top:25px;">
+    <button class="btn" onclick="cetakKartu()">🖨️ Cetak Kartu</button>
+    <a href="data_guru.html" class="btn">📊 Data Guru</a>
+    <a href="index.html" class="btn">🚪 Keluar</a>
+  </div>
+
+<script>
+  let data = JSON.parse(localStorage.getItem("kartuPeminjaman")) 
+          || JSON.parse(localStorage.getItem("dataTerakhir")) 
+          || null;
+
+  if (!data || data.peran !== "guru") {
+    const daftar = JSON.parse(localStorage.getItem("dataPeminjamanGuru")) || [];
+    if (daftar.length>0) data = daftar[daftar.length-1];
+  }
+
+  if (!data || data.peran !== "guru") {
+    alert("Data guru tidak ditemukan. Kembali ke beranda.");
+    window.location.href = "index.html";
+  }
+
+  const jamLabel = no => {
+    const map = {1:"07.00 - 07.45",2:"07.45 - 08.30",3:"08.30 - 09.15",4:"09.15 - 10.00",5:"10.20 - 11.05",6:"11.05 - 11.50",7:"11.50 - 12.35",8:"12.35 - 13.20"};
+    return map[no] || "-";
+  };
+
+  document.getElementById("nama").textContent = data.nama || "-";
+  document.getElementById("mapel").textContent = data.mapel || "-";
+  document.getElementById("tanggal").textContent = data.tanggal || "-";
+  document.getElementById("fasilitas").textContent = data.fasilitas || "-";
+  document.getElementById("jam").textContent = 
+    (data.jamMulai && data.jamSelesai)
+    ? `Jam ke-${data.jamMulai} (${jamLabel(data.jamMulai)}) s.d Jam ke-${data.jamSelesai} (${jamLabel(data.jamSelesai)})`
+    : "-";
+
+  let keterangan = data.keterangan;
+  if (!keterangan) {
+    const daftar = JSON.parse(localStorage.getItem("dataPeminjamanGuru")) || [];
+    const match = daftar.slice().reverse().find(item => 
+      item.nama===data.nama && item.tanggal===data.tanggal && item.fasilitas===data.fasilitas
+    );
+    if (match && match.keterangan) keterangan = match.keterangan;
+  }
+  document.getElementById("keterangan").textContent = keterangan || "-";
+
+  const kodeMap = {"Lab Komputer":"LK","Lab Fisika":"LF","Lab Kimia":"LKm","Proyektor":"P","Laptop":"L","Bola":"B"};
+  const kodeFasilitas = kodeMap[data.fasilitas] || "F";
+  const tanggalCode = (data.tanggal || "").replaceAll("-","");
+  const kode = `GU${tanggalCode}${kodeFasilitas}${data.jamMulai || '0'}`;
+  document.getElementById("kode").textContent = kode;
+
+  new QRCode(document.getElementById("qrcode"), { text: kode, width:120, height:120 });
+
+  const daftar = JSON.parse(localStorage.getItem("dataPeminjamanGuru")) || [];
+  const exists = daftar.some(it => it.nama===data.nama && it.tanggal===data.tanggal && it.fasilitas===data.fasilitas);
+  if (!exists) {
+    daftar.push({...data, kode});
+    localStorage.setItem("dataPeminjamanGuru", JSON.stringify(daftar));
+  }
+
+  function cetakKartu() {
+    const kartu = document.getElementById("kartuGuru");
+    html2canvas(kartu).then(canvas=>{
+      const link = document.createElement("a");
+      link.download = `${kode}.jpg`;
+      link.href = canvas.toDataURL("image/jpeg");
+      link.click();
+    });
+  }
+</script>
+
+</body>
+</html>

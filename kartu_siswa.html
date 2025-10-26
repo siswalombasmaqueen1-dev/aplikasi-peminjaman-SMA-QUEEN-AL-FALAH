@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kartu Peminjaman Siswa</title>
+
+  <!-- Library QR Code & Screenshot -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 40px 20px;
+    }
+
+    .kartu {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+      text-align: left;
+    }
+
+    .kartu h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    .kartu p {
+      font-size: 17px;
+      margin: 6px 0;
+      padding-left: 20px;
+    }
+
+    #qrcode {
+      margin: 15px auto 25px;
+      width: 120px;
+      height: 120px;
+      background: white;
+      padding: 8px;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .btn {
+      margin: 12px 8px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn:hover {
+      background: red;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .kartu {
+        padding: 20px;
+        width: 90%;
+      }
+
+      .kartu p {
+        font-size: 15px;
+        padding-left: 10px;
+      }
+
+      .btn {
+        width: 100%;
+        margin: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="kartu" id="kartuSiswa">
+    <div id="qrcode"></div>
+    <h2>🎓 Kartu Peminjaman Siswa</h2>
+
+    <p><strong>Nama:</strong> <span id="nama">-</span></p>
+    <p><strong>Kelas:</strong> <span id="kelas">-</span></p>
+    <p><strong>Tanggal:</strong> <span id="tanggal">-</span></p>
+    <p><strong>Fasilitas:</strong> <span id="fasilitas">-</span></p>
+    <p><strong>Jam:</strong> <span id="jam">-</span></p>
+    <p><strong>Keterangan:</strong> <span id="keterangan">-</span></p>
+    <p><strong>No. Peminjaman:</strong> <span id="kode">-</span></p>
+  </div>
+
+  <div style="margin-top:25px;">
+    <button class="btn" onclick="cetakKartu()">🖨️ Cetak Kartu</button>
+    <a href="data_siswa.html" class="btn">📊 Data Siswa</a>
+    <a href="index.html" class="btn">🚪 Keluar</a>
+  </div>
+
+<script>
+  // Ambil data siswa
+  let data = JSON.parse(localStorage.getItem("kartuPeminjaman")) 
+          || JSON.parse(localStorage.getItem("dataTerakhir")) 
+          || null;
+
+  if (!data || data.peran !== "siswa") {
+    const daftar = JSON.parse(localStorage.getItem("dataPeminjamanSiswa")) || [];
+    if (daftar.length > 0) data = daftar[daftar.length - 1];
+  }
+
+  if (!data || data.peran !== "siswa") {
+    alert("Data siswa tidak ditemukan. Kembali ke beranda.");
+    window.location.href = "index.html";
+  }
+
+  const jamLabel = no => {
+    const map = {1:"07.00 - 07.45",2:"07.45 - 08.30",3:"08.30 - 09.15",4:"09.15 - 10.00",5:"10.20 - 11.05",6:"11.05 - 11.50",7:"11.50 - 12.35",8:"12.35 - 13.20"};
+    return map[no] || "-";
+  };
+
+  document.getElementById("nama").textContent = data.nama || "-";
+  document.getElementById("kelas").textContent = data.kelas || "-";
+  document.getElementById("tanggal").textContent = data.tanggal || "-";
+  document.getElementById("fasilitas").textContent = data.fasilitas || "-";
+  document.getElementById("jam").textContent = (data.jamMulai && data.jamSelesai)
+    ? `Jam ke-${data.jamMulai} (${jamLabel(data.jamMulai)}) s.d Jam ke-${data.jamSelesai} (${jamLabel(data.jamSelesai)})`
+    : "-";
+
+  // Keterangan
+  let keterangan = data.keterangan;
+  if (!keterangan) {
+    const daftar = JSON.parse(localStorage.getItem("dataPeminjamanSiswa")) || [];
+    const match = daftar.slice().reverse().find(item =>
+      item.nama === data.nama && item.tanggal === data.tanggal && item.fasilitas === data.fasilitas
+    );
+    if (match && match.keterangan) keterangan = match.keterangan;
+  }
+  document.getElementById("keterangan").textContent = keterangan || "-";
+
+  // Kode unik
+  const kodeMap = {"Lab Komputer":"LK","Lab Fisika":"LF","Lab Kimia":"LKm","Proyektor":"P","Laptop":"L","Bola":"B"};
+  const kodeFasilitas = kodeMap[data.fasilitas] || "F";
+  const tanggalCode = (data.tanggal || "").replaceAll("-","");
+  const kode = `SI${tanggalCode}${kodeFasilitas}${data.jamMulai || '0'}`;
+  document.getElementById("kode").textContent = kode;
+
+  // QR Code
+  new QRCode(document.getElementById("qrcode"), { text: kode, width:120, height:120 });
+
+  // Simpan riwayat siswa
+  const daftar = JSON.parse(localStorage.getItem("dataPeminjamanSiswa")) || [];
+  const exists = daftar.some(it => it.nama===data.nama && it.tanggal===data.tanggal && it.fasilitas===data.fasilitas);
+  if (!exists) {
+    daftar.push({...data, kode});
+    localStorage.setItem("dataPeminjamanSiswa", JSON.stringify(daftar));
+  }
+
+  // Cetak kartu
+  function cetakKartu() {
+    const kartu = document.getElementById("kartuSiswa");
+    html2canvas(kartu).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `${kode}.jpg`;
+      link.href = canvas.toDataURL("image/jpeg");
+      link.click();
+    });
+  }
+</script>
+
+</body>
+</html>

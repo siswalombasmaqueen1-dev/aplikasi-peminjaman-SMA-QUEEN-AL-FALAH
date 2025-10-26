@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📋 Data Peminjaman Guru & Siswa</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #001f3f, #003366);
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 15px 0;
+      color: #7FDBFF;
+      text-shadow: 0 0 8px rgba(0,0,0,0.3);
+    }
+
+    table {
+      width: 100%;
+      max-width: 1100px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    th {
+      background-color: rgba(0,0,0,0.4);
+      color: #7FDBFF;
+    }
+
+    tr:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .btn {
+      margin: 20px 8px;
+      background: linear-gradient(to right, #7FDBFF, #39CCCC);
+      color: black;
+      border: none;
+      padding: 10px 18px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background: red;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    input[type="text"] {
+      width: 260px;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 15px;
+    }
+
+    .section {
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 13px;
+        padding: 6px;
+      }
+      table {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>📋 Data Peminjaman Guru & Siswa</h2>
+
+  <input type="text" id="searchInput" placeholder="🔍 Cari nama..." onkeyup="cariData()">
+
+  <!-- TABEL GURU -->
+  <div class="section">
+    <h2>👩‍🏫 Data Peminjaman Guru</h2>
+    <table id="tabelGuru">
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Mata Pelajaran</th>
+          <th>Tanggal</th>
+          <th>Fasilitas</th>
+          <th>Jam</th>
+          <th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- TABEL SISWA -->
+  <div class="section">
+    <h2>🎓 Data Peminjaman Siswa</h2>
+    <table id="tabelSiswa">
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Kelas</th>
+          <th>Tanggal</th>
+          <th>Fasilitas</th>
+          <th>Jam</th>
+          <th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <a href="index.html" class="btn">🏠 Kembali</a>
+
+  <script>
+    // Fungsi utama menampilkan tabel guru & siswa
+    function tampilkanData() {
+      const dataGuru = JSON.parse(localStorage.getItem("dataPeminjamanGuru")) || [];
+      const dataSiswa = JSON.parse(localStorage.getItem("dataPeminjamanSiswa")) || [];
+
+      const tabelGuru = document.querySelector("#tabelGuru tbody");
+      const tabelSiswa = document.querySelector("#tabelSiswa tbody");
+
+      tabelGuru.innerHTML = "";
+      tabelSiswa.innerHTML = "";
+
+      // Data Guru
+      if (dataGuru.length === 0) {
+        tabelGuru.innerHTML = `<tr><td colspan="6">Belum ada data guru.</td></tr>`;
+      } else {
+        dataGuru.forEach(item => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${item.nama}</td>
+            <td>${item.mapel || '-'}</td>
+            <td>${item.tanggal}</td>
+            <td>${item.fasilitas}</td>
+            <td>${item.jamMulai || '-'} - ${item.jamSelesai || '-'}</td>
+            <td>${item.keterangan || '-'}</td>
+          `;
+          tabelGuru.appendChild(tr);
+        });
+      }
+
+      // Data Siswa
+      if (dataSiswa.length === 0) {
+        tabelSiswa.innerHTML = `<tr><td colspan="6">Belum ada data siswa.</td></tr>`;
+      } else {
+        dataSiswa.forEach(item => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${item.nama}</td>
+            <td>${item.kelas || '-'}</td>
+            <td>${item.tanggal}</td>
+            <td>${item.fasilitas}</td>
+            <td>${item.jamMulai || '-'} - ${item.jamSelesai || '-'}</td>
+            <td>${item.keterangan || '-'}</td>
+          `;
+          tabelSiswa.appendChild(tr);
+        });
+      }
+    }
+
+    // Fungsi pencarian
+    function cariData() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("tbody tr");
+      rows.forEach(row => {
+        const nama = row.cells[0]?.textContent.toLowerCase() || "";
+        row.style.display = nama.includes(input) ? "" : "none";
+      });
+    }
+
+    tampilkanData();
+  </script>
+</body>
+</html>
